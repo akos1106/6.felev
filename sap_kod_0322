@@ -1,1 +1,46 @@
 
+*&---------------------------------------------------------------------*
+*& Report  ZDATEANDTIMESZ334
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT  ZDATEANDTIMESZ334.
+TABLES zempsz334.
+
+
+DATA MYDATE TYPE D. "STORED: YYYYMMDD
+
+*AKTUALIS DATUM
+WRITE: 'MAI DATUM: ',SY-DATUM.
+
+***MŰVELETEK
+
+**KÜLÖNBSÉGET NAPOKBAN ADJA VISSZA
+DATA NAPOK TYPE I.
+*IDEI ÉVBEN ELTELT NAPOK SZÁMA MENNYI
+MYDATE = '20230101'.
+NAPOK = SY-DATUM - MYDATE.
+WRITE :/ 'ELTELT NAPOK SZÁMA: ', NAPOK. 
+
+**ÖSSZEG IS NAPOKBAN
+*20 NAP MULVA MILYEN DATUM LESZ
+MYDATE = SY-DATUM + 20.
+WRITE :/ '20 NAP MULVA ', MYDATE, ' LESZ.'.
+
+**HÁNY NAP MULVA LESZ A KÖVETKEZŐ HÓNAP ELSŐ NAPJA?
+DATA HO TYPE I.
+HO = SY-DATUM+4(2).
+ADD 1 TO HO. "FELTÉVE H NEM DECEMBER
+MYDATE = SY-DATUM.
+MYDATE+4(2) = HO.
+MYDATE+6(2) = '01'.
+NAPOK = MYDATE - SY-DATUM.
+WRITE:/ NAPOK,' NAP MÚLVA LESZ ELSEJE'.
+
+**ELŐZŐ HÓNAP UTOLSÓ NAPJA
+NAPOK = SY-DATUM+6(2).
+MYDATE = SY-DATUM - NAPOK.
+WRITE: /'ELŐZŐ HONAP UTOLSO NAPJA: ',MYDATE.
