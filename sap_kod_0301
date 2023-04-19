@@ -8,32 +8,58 @@
 
 REPORT  zemplistsz334 LINE-SIZE 150.
 TABLES zempsz334. "TÁBLA DEKLARÁLÁS
+TABLES zofficessz334.
 
 
-
-*2. FELADAT, 5-RE KEREKITETT
-DATA: SAL TYPE I, SALSUM TYPE I VALUE 0, Y TYPE I.
+*04.19
+*2. emeleti dolgozók 2 FÉLE MEGOLDÁS
+WRITE '2. emeleti dolgozók:'.
+ULINE.
 
 SELECT * FROM zempsz334.
-  IF zempsz334-bonus <= 5.
-    SAL = zempsz334-BONUS * 2500 / 12.
-  ELSE.
-    SAL = zempsz334-BONUS * 3000 / 12.
-  ENDIF.
- 
-  Y = SAL MOD 5.
-  IF Y <= 2.
-    SAL = SAL - Y.
-  ELSE.
-    SAL = SAL + ( 5 - Y ).
-  ENDIF.
-  
-  write: / zempsz334-empid,zempsz334-sname,' SAL= ',SAL.
-  SALSUM = SALSUM + SAL.
+  SELECT * FROM zofficessz334.
+    IF zofficessz334-officeno = zempsz334-iroda AND zofficessz334-floor = 2.
+      WRITE: / zempsz334-fname,' ',zempsz334-sname.
+    ENDIF.
+  ENDSELECT.
 ENDSELECT.
 
 ULINE.
-WRITE: / 'TOTAL SAL= ',SALSUM.
+
+select * FROM zempsz334.
+SELECT * FROM zofficessz334
+  where officeno = zempsz334-iroda.
+  IF zofficessz334-floor = 2.
+    WRITE: / zempsz334-fname,' ',zempsz334-sname.
+  ENDIF.
+ENDSELECT.
+ENDSELECT.
+
+*---------------------------------------------------------
+
+**2. FELADAT, 5-RE KEREKITETT
+*DATA: SAL TYPE I, SALSUM TYPE I VALUE 0, Y TYPE I.
+*
+*SELECT * FROM zempsz334.
+*  IF zempsz334-bonus <= 5.
+*    SAL = zempsz334-BONUS * 2500 / 12.
+*  ELSE.
+*    SAL = zempsz334-BONUS * 3000 / 12.
+*  ENDIF.
+*
+*  Y = SAL MOD 5.
+*  IF Y <= 2.
+*    SAL = SAL - Y.
+*  ELSE.
+*    SAL = SAL + ( 5 - Y ).
+*  ENDIF.
+*
+*  write: / zempsz334-empid,zempsz334-sname,' SAL= ',SAL.
+*  SALSUM = SALSUM + SAL.
+*ENDSELECT.
+*
+*ULINE.
+*WRITE: / 'TOTAL SAL= ',SALSUM.
 
 
 
