@@ -1,0 +1,456 @@
+*&---------------------------------------------------------------------*
+*& Report  ZEMPLISTSZ334
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT  zemplistsz334 LINE-SIZE 150.
+TABLES zempsz334. "TÁBLA DEKLARÁLÁS
+TABLES zofficessz334.
+
+*04.26
+
+*SQL utasítások ABAP-ban
+DATA WA LIKE ZEMPSZ334. "WORK AREA, ÜRES TÁBLA SOR
+
+*FELADAT
+*UJ REKORD:
+*EMPID = 10000008 
+*SNAME = LEGFIATALABBÉ
+*FNAME = LEGIDOSEBBÉ
+*BONUS = ÁTLAG BONUS
+*DOB = 1989.12.30
+
+SELECT * FROM ZEMPSZ334 ORDER BY DOB.
+  ENDSELECT.
+WA-SNAME = ZEMPSZ334-SNAME.
+
+SELECT * FROM ZEMPSZ334 ORDER BY DOB DESCENDING.
+  ENDSELECT.
+WA-FNAME = ZEMPSZ334-FNAME.
+
+
+DATA SZAM TYPE I VALUE 0.
+DATA DB TYPE I VALUE 0.
+DATA ATLAG TYPE P DECIMALS 2.
+
+SELECT * FROM ZEMPSZ334.
+  SZAM = SZAM + ZEMPSZ334-BONUS.
+  DB = DB + 1.
+  ENDSELECT.
+ATLAG = SZAM / DB.
+
+WA-BONUS = ATLAG.
+WA-EMPID = '10000008'.
+WA-DOB = '19891230'.
+
+INSERT ZEMPSZ334 FROM WA.
+
+**FELADAT: 60 ÉV FELETTIEK TÖRLÉSE
+*SELECT * FROM ZEMPSZ334.
+*  IF ( ( SY-DATUM - ZEMPSZ334-DOB ) / 365 ) >= 60.
+*    WA-EMPID = ZEMPSZ334-EMPID.
+*    DELETE ZEMPSZ334 FROM WA.
+*    
+*    IF sy-subrc = 0.
+*      WRITE: wa-sname, 'nyugdíjba ment, töröltük'.
+*    ELSE.
+*      WRITE: 'Error: ', sy-subrc.
+*    ENDIF.
+*    
+*  ENDIF.
+*ENDSELECT.
+*
+**MÁSHOGY EZ
+*
+** Feladat: 60 év felettiek törlése
+*DATA limit TYPE d.
+*limit = sy-datum.
+*limit(4) = limit(4) - 60.
+*" limit = pontosan 60 évvel ezelőtti dátum.
+*SELECT * FROM zempsz334.
+*  IF zempsz334-dob <= limit.
+*    wa-empid = zempsz334-empid.
+*    DELETE zempsz334 FROM wa.
+*    IF sy-subrc = 0.
+*      WRITE: ZEMPSZ334-sname, 'nyugdíjba ment, töröltük'.
+*    ELSE.
+*      WRITE: 'Error: ', sy-subrc.
+*    ENDIF.
+*  ENDIF.
+*ENDSELECT.
+*
+**MÁSHOGY EZ
+*
+** Feladat: 60 év felettiek törlése
+*DATA limit TYPE d.
+*limit = sy-datum.
+*limit(4) = limit(4) - 60.
+*" limit = pontosan 60 évvel ezelőtti dátum.
+*SELECT * FROM zempsz334 
+*  WHERE zempsz334-dob <= limit.
+*    wa-empid = zempsz334-empid.
+*    DELETE zempsz334 FROM wa.
+*    IF sy-subrc = 0.
+*      WRITE: ZEMPSZ334-sname, 'nyugdíjba ment, töröltük'.
+*    ELSE.
+*      WRITE: 'Error: ', sy-subrc.
+*    ENDIF.
+*ENDSELECT.
+
+
+
+**DELETE - MEGLÉVŐ REKORD TÖRLÉSE (LÉTEZŐ KULCSOT ADJ MEG)
+** PL 
+*WA-EMPID = '10000007'.
+*
+*DELETE ZEMPSZ334 FROM WA.
+*
+**3. ELLENŐRZÉS MINDEN SQL UTASÍTÁS UTÁN
+*IF SY-SUBRC = 0.
+*  WRITE: / 'SIKERES VÁLTOZTATÁS'.
+*ELSE.
+*  WRITE: 'HIBA TÖRTÉNT, SY-SUBRC: ',SY-SUBRC.
+*ENDIF.
+
+
+**MODIFY - NEM SZÜKSÉGES LETÉZŐ KULCSOT MEGADNI (EKKOR INSERTKÉNT MŰKÖDIK),
+*          "EGYÉBKÉNT UPDATEKÉNT MŰKÖDIK
+*
+**NICOLE TITLE -> MS
+*WA-EMPID = '10000007'. "HA NEM LÉTEZŐ KULCS, ÚJ SORT AD HOZZÁ EZZEL A KULCCSAL
+*SELECT * FROM ZEMPSZ334 WHERE EMPID = WA-EMPID.
+*  WA = ZEMPSZ334.
+*ENDSELECT.
+*WA-TITLE = 'MS'.
+*
+*MODIFY ZEMPSZ334 FROM WA.
+*
+**3. ELLENŐRZÉS MINDEN SQL UTASÍTÁS UTÁN
+*IF SY-SUBRC = 0.
+*  WRITE: / 'SIKERES VÁLTOZTATÁS'.
+*ELSE.
+*  WRITE: 'HIBA TÖRTÉNT, SY-SUBRC: ',SY-SUBRC.
+*ENDIF.
+
+
+**UPDATE - MEGLÉVŐ REKORD MÓDOSÍTÁSA
+**NICOLE SZÜLDÁTUM MEGADÁSDA 2000.03.03.
+*WA-EMPID = '10000007'. "MEGTALÁLOD KIT MÓDOSITASZ
+*
+**MEGLÉVŐ ADATOK MÁSOLÁSA WA-BA
+*SELECT * FROM ZEMPSZ334 WHERE EMPID = WA-EMPID.
+*  WA = ZEMPSZ334.
+*ENDSELECT.
+*
+**ÁTIROD AMIKET SZERKESZTENI AKARSZ
+*WA-DOB = '20000303'.
+*
+*UPDATE ZEMPSZ334 FROM WA.
+*
+**3. ELLENŐRZÉS MINDEN SQL UTASÍTÁS UTÁN
+*IF SY-SUBRC = 0.
+*  WRITE: / 'SIKERES VÁLTOZTATÁS'.
+*ELSE.
+*  WRITE: 'HIBA TÖRTÉNT, SY-SUBRC: ',SY-SUBRC.
+*ENDIF.
+*
+*
+**FELADAT: MINDEN ALKALMAZOTTAT FIATALITSUNK MEG 1 ÉVVEL
+*SELECT * FROM ZEMPSZ334.
+*WA = ZEMPSZ334.
+*WA-DOB(4) = WA-DOB(4) + 1.
+*UPDATE ZEMPSZ334 FROM WA.
+*IF SY-SUBRC = 0.
+*  WRITE: / 'SIKERES VÁLTOZTATÁS'.
+*ELSE.
+*  WRITE: 'HIBA TÖRTÉNT, SY-SUBRC: ',SY-SUBRC.
+*ENDIF.
+*ENDSELECT.
+
+
+**INSERT - ÚJ REKORD BEILLESZTÉSE
+**ÚJ ALKALMAZOTT: 10000006 SMITH ADAM 1999.01.02. MR, TÖBBI ÜRES
+*
+**1. WORK AREA SZERKESZTÉSE
+*WA-EMPID = '10000006'.
+*WA-SNAME = 'SMITH'.
+*WA-FNAME = 'ADAM'.
+*WA-DOB = '19990102'.
+*WA-TITLE = 'MR'.
+*
+**2. WA BEILLESZTÉSE A TÁBLÁBA
+*INSERT ZEMPSZ334 FROM WA.
+*
+**3. ELLENŐRZÉS MINDEN SQL UTASÍTÁS UTÁN
+*IF SY-SUBRC = 0.
+*  WRITE: / 'SIKERES VÁLTOZTATÁS'.
+*ELSE.
+*  WRITE: 'HIBA TÖRTÉNT, SY-SUBRC: ',SY-SUBRC.
+*ENDIF.
+*
+**4. WORK AREA KIURITESE
+*CLEAR WA.
+*
+**------
+*
+**MÉGEGY ALKALMAZOTT:
+*WA-EMPID = '10000007'.
+*WA-SNAME = 'PARKER'.
+*WA-FNAME = 'NICOLE'.
+**ITT AMIT NEM ÍRUNK ÁT AZ ELŐZŐ UTÁN HA NINCS CLEAR WA EZ ELŐTT, AZ UGYANAZ MARAD
+*
+**2. WA BEILLESZTÉSE A TÁBLÁBA
+*INSERT ZEMPSZ334 FROM WA.
+*
+**3. ELLENŐRZÉS MINDEN SQL UTASÍTÁS UTÁN
+*IF SY-SUBRC = 0.
+*  WRITE: / 'SIKERES VÁLTOZTATÁS'.
+*ELSE.
+*  WRITE: 'HIBA TÖRTÉNT, SY-SUBRC: ',SY-SUBRC.
+*ENDIF.
+
+
+*04.26
+
+*---------------------------------------------------------
+
+*04.19
+**2. emeleti dolgozók 2 FÉLE MEGOLDÁS
+*WRITE '2. emeleti dolgozók:'.
+*ULINE.
+*
+*SELECT * FROM zempsz334.
+*  SELECT * FROM zofficessz334.
+*    IF zofficessz334-officeno = zempsz334-iroda AND zofficessz334-floor = 2.
+*      WRITE: / zempsz334-fname,' ',zempsz334-sname.
+*    ENDIF.
+*  ENDSELECT.
+*ENDSELECT.
+*
+*ULINE.
+*
+*select * FROM zempsz334.
+*SELECT * FROM zofficessz334
+*  where officeno = zempsz334-iroda.
+*  IF zofficessz334-floor = 2.
+*    WRITE: / zempsz334-fname,' ',zempsz334-sname.
+*  ENDIF.
+*ENDSELECT.
+*ENDSELECT.
+
+*---------------------------------------------------------
+
+**2. FELADAT, 5-RE KEREKITETT
+*DATA: SAL TYPE I, SALSUM TYPE I VALUE 0, Y TYPE I.
+*
+*SELECT * FROM zempsz334.
+*  IF zempsz334-bonus <= 5.
+*    SAL = zempsz334-BONUS * 2500 / 12.
+*  ELSE.
+*    SAL = zempsz334-BONUS * 3000 / 12.
+*  ENDIF.
+*
+*  Y = SAL MOD 5.
+*  IF Y <= 2.
+*    SAL = SAL - Y.
+*  ELSE.
+*    SAL = SAL + ( 5 - Y ).
+*  ENDIF.
+*
+*  write: / zempsz334-empid,zempsz334-sname,' SAL= ',SAL.
+*  SALSUM = SALSUM + SAL.
+*ENDSELECT.
+*
+*ULINE.
+*WRITE: / 'TOTAL SAL= ',SALSUM.
+
+
+
+**1. FELADAT
+*DATA: SZNAPOK TYPE I, HETEK TYPE I, NAPOK TYPE I.
+*
+*write 'Alkalmazott dayoff lista'.
+*ULINE.
+*SELECT * FROM zempsz334.
+*  SZNAPOK = zempsz334-BONUS * 6.
+*  HETEK = SZNAPOK DIV 7.
+*  NAPOK = SZNAPOK MOD 7.
+*  write: / zempsz334-empid,zempsz334-sname,' sznapok= ',sznapok,', ami ',hetek,' hét és ',napok,' nap.'.
+*ENDSELECT.
+
+*03.08
+*-----------------------------------------------------------------------------------------------
+*03.01
+
+**4. FELADAT
+*DATA prem TYPE p DECIMALS 2.
+*
+*SELECT * FROM zempsz334.
+*  IF zempsz334-bonus >= 4.
+*    prem = zempsz334-bonus * '1.22'.
+*  ELSE.
+*    prem = zempsz334-bonus * '1.44'.
+*  ENDIF.
+*  WRITE: / zempsz334-empid,zempsz334-sname,'PRÉMIUM:',prem.
+*ENDSELECT.
+
+
+
+*"ARITMETIKAI MŰVELETEK
+*DATA EGESZ TYPE I.
+*DATA TORT TYPE P DECIMALS 2.
+*EGESZ = 12.
+*TORT = '23.6'.
+*
+*"ÖSSZEADÁS
+*EGESZ = EGESZ + 3.
+*ADD 3 TO EGESZ.
+*
+*"KIVONÁS
+*TORT = TORT - 1.
+*SUBTRACT 1 FROM TORT.
+*
+*"SZORZÁS
+*EGESZ = EGESZ * TORT.
+*MULTIPLY EGESZ BY TORT.
+*
+*"OSZTASOK:
+*"STANDARD OSZTAS
+*WRITE 'STANDARD OSZTAS:'.
+*WRITE TORT.
+*TORT = TORT / 3. "MIVEL BALRA TÖRT VAN, AZ EREDMÉNY IS TÖRT LESZ
+*WRITE: '/ 3 = ' , TORT.
+*ULINE.
+*
+*"EGÉSZ OSZTÁS
+*EGESZ = 13.
+*WRITE 'EGESZ OSZTAS:'.
+*WRITE EGESZ.
+*EGESZ = EGESZ DIV 5.
+*WRITE: 'DIV 5 = ' , EGESZ.
+*ULINE.
+*
+*"MARADEKOS OSZTÁS
+*EGESZ = 13.
+*WRITE 'MARADEKOS OSZTAS:'.
+*WRITE EGESZ.
+*EGESZ = EGESZ MOD 5.
+*WRITE: 'MOD 5 = ' , EGESZ.
+*ULINE.
+*
+*
+*"EGÉSZ OSZTÁS TÖRT SZÁMOKKAL
+*TORT = '5.45'.
+*WRITE 'EGESZ OSZTAS TÖRTEKKEL:'.
+*WRITE TORT.
+*TORT = TORT DIV '1.48'.
+*WRITE: 'DIV 1.48 = ' , TORT.
+*ULINE.
+*
+*"MARADEKOS OSZTÁS TÖRT SZÁMOKKAL
+*TORT = '5.45'.
+*WRITE 'MARADEKOS OSZTAS TÖRTEKKEL:'.
+*WRITE TORT.
+*TORT = TORT MOD '1.48'.
+*WRITE: 'MOD 1.48 = ' , TORT.
+*ULINE.
+
+
+
+*"3. FELADAT, 4+ BONUSZOSOK CSAK
+*DATA db TYPE i VALUE 0.
+*CONSTANTS LIMIT LIKE ZEMPSZ334-BONUS VALUE 4. "ENNEK A TIPUSÁT ADJA A LIMIT VÁLTOZÓNAK
+*WRITE 'ALKALMAZOTT LISTA:'.
+*ULINE.
+*
+*SELECT * FROM zempsz334.
+*  IF zempsz334-bonus >= LIMIT.
+*    WRITE / zempsz334-empid.
+*    WRITE: zempsz334-sname,',',zempsz334-fname.
+*    ADD 1 TO db.
+*  ENDIF.
+*ENDSELECT.
+*
+*ULINE.
+*WRITE: 'ÖSSZESEN: ' ,db,' DB 4+ BONUSZOS ALKALMAZOTT' .
+
+
+*"2. FELADAT
+*DATA DB TYPE I VALUE 0.
+*WRITE 'ALKALMAZOTT LISTA:'.
+*ULINE.
+*
+*SELECT * FROM zempsz334.
+*  WRITE / zempsz334-EMPID.
+*  WRITE: zempsz334-SNAME,',',ZEMPSZ334-FNAME.
+*  ADD 1 TO DB.
+*ENDSELECT.
+*
+*ULINE.
+*WRITE: 'ÖSSZESEN: ' ,DB,' DB ALKALMAZOTT' .
+
+
+
+*"VÁLTOZÓK
+*DATA MYINT TYPE i. "EGÉSZ TÍPUS DEKLARÁLÁS
+*DATA MYDEC TYPE p DECIMALS 2. "PACKED DECIMAL , DECIMALS NÉLKÜL EGÉSZRE KEREKÍT
+*DATA MYINT2 TYPE I VALUE 0. "RÖGTÖN ÉRTÉKET KAP, 0 KEZDŐÉRTÉK
+*CONSTANTS MYCONST TYPE I VALUE 100. "KONSTANS, KELL NEKI KEZDŐÉRTÉK
+*
+*"ÉRTÉKADÁSOK
+*MYINT = 5. "SZÓKÖZÖK KELLENEK
+*MYDEC = '4.2'. "NEM EGÉSZ SZÁMNÁL APOSZTRÓFOK
+*MYINT = MYDEC + 2. "EZ 6 , SZÓKÖZÖK KELLENEK
+*MYDEC = MYDEC + 2. "EZ 6.2
+*
+*"ÉRTÉKNÖVERLÉS ÉS CSÖKKENTÉS
+*ADD 1 TO MYINT. "MYINT = MYINT + 1.
+*SUBTRACT 2 FROM MYINT. "MYINT = MYINT - 2.
+*
+*"KIIRATÁSOK
+*WRITE / MYINT.
+*WRITE / MYDEC.
+*WRITE / MYCONST.
+*SKIP 3.
+*ULINE.
+
+
+
+*"1. FELADAT
+*WRITE 'SURNAME OF EMPLOYEES:'.
+*ULINE.
+*SELECT * FROM zempsz334.
+*  WRITE / zempsz334-sname.
+*ENDSELECT.
+*SKIP 2.
+*WRITE / 'FNAMES OF EMPLOYEES:'.
+*ULINE.
+*SELECT * FROM zempsz334.
+*  WRITE: zempsz334-fname.
+*  WRITE ','.
+*ENDSELECT.
+*ULINE.
+
+
+*SELECT * FROM zempsz334.
+*  WRITE: / zempsz334-empid,zempsz334-sname,
+*           zempsz334-fname,zempsz334-dob.
+*ENDSELECT.
+
+
+*SELECT * FROM zempsz334.
+*  WRITE / zempsz334-sname. "ÚJ SORBAN KEZDI A REKORDOT -> /
+*  WRITE zempsz334-fname.
+*  ULINE. "ALÁHÚZÁS
+*  SKIP 1. "SKIP N. -> N DB SORT HAGY KI
+*ENDSELECT.
+
+
+*"TÁBLA TARTALMA SORTÖRÉS
+*SELECT * from zempsz334.
+* WRITE / ZEMPSZ334-sname. "ÚJ SORBAN KEZDI A REKORDOT -> /
+* WRITE ZEMPSZ334-fname.
+*ENDSELECT.
