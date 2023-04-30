@@ -1,0 +1,36 @@
+This weather dataset was collected in 2 years. It contains various weather features like temperature, water level, fire hazard level, wind speed and more.
+
+water_level: level of water in cm (vízszint)
+precipitation: precipitation in mm (csapadék mennyiség)
+temperature: temperature in Celsius (hőmérséklet)
+humidity: humidity in % (páratartalom)
+visibility: visibility in km (látótávolság)
+wind: speed of wind in m/s (szélsebesség)
+weather: general weather condition
+0 - Partly Cloudy
+1 - Cloudy
+2 - Clear
+3 - Rain
+4 - Strong Wind
+5 - Fog
+6 - Mist
+7 - Snow
+8 - Storm
+pressure: pressure in GPa (nyomás)
+fire: level of fire hazard (tűzveszély szintje)
+wl_change: change of water level in cm (vízszint válzotás)
+temp_change: change of temperature in Celsius (hőmérs. változás)
+pressure_change: change of pressure in GPa (nyomásváltozás)
+
+
+here is the first 10 lines of my csv file. how should i start my exploratory data analysis?
+water_level,precipitation,temperature,humidity,visibility,wind,weather,pressure,fire,wl_change,temp_change,pressure_change
+468.0,0.0,24.9,31.0,100.0,4.0,0.0,993.8,4.0,-3.0,-0.3,-0.4
+140.0,0.0,27.9,22.0,20.0,1.0,0.0,1004.1,4.0,-2.0,0.6,-1.0
+464.0,0.0,25.6,28.0,20.0,2.0,1.0,1001.2,4.0,-7.0,-1.8,-0.3
+467.0,0.0,26.7,26.0,100.0,3.0,0.0,992.3,4.0,-1.0,1.2,-1.3
+138.0,0.0,29.1,22.0,20.0,1.0,0.0,1001.3,4.0,-2.0,2.5,-1.3
+461.0,0.0,27.2,30.0,20.0,3.0,0.0,999.9,4.0,-3.0,-0.8,-0.7
+459.0,16.0,21.0,88.0,10.0,1.0,3.0,987.3,5.0,-1.0,1.6,1.3
+500.0,2.0,18.2,93.0,10.0,1.0,8.0,996.6,4.0,-2.0,-8.0,2.6
+459.0,16.0,21.0,88.0,10.0,1.0,3.0,987.3,5.0,-1.0,1.6,1.3
