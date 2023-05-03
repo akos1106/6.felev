@@ -10,6 +10,33 @@ REPORT  zemplistsz334 LINE-SIZE 150.
 TABLES zempsz334. "TÁBLA DEKLARÁLÁS
 TABLES zofficessz334.
 
+
+DATA mydate TYPE d.
+DATA wa LIKE zempsz334.
+
+mydate = sy-datum.
+mydate(4) = sy-datum(4) - 45.
+
+SELECT * FROM zempsz334.
+  IF zempsz334-dob <= mydate.
+    wa = zempsz334.
+
+    wa-bonus = wa-bonus + 1.
+
+    UPDATE zempsz334 FROM wa.
+
+    IF sy-subrc = 0.
+      WRITE: / wa-sname, ' BONUSZAT EMELTUK:', zempsz334-bonus,' -> ',wa-bonus.
+    ELSE.
+      WRITE: / 'ERROR'.
+    ENDIF.
+  ENDIF.
+ENDSELECT.
+
+
+
+*05.03
+*---------------------------------------------------
 *04.26
 
 *SQL utasítások ABAP-ban
