@@ -1,3 +1,5 @@
+https://colab.research.google.com/drive/1qg32Zhgx2bt4mVF0fUAowMhLl_J5IpfR?usp=sharing
+
 This weather dataset was collected in 2 years. It contains various weather features like temperature, water level, fire hazard level, wind speed and more.
 
 water_level: level of water in cm (vízszint)
